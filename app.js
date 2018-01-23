@@ -21,7 +21,7 @@ var bot= new  FBBotFramework({
   verify_token: 'verify_token'
 });
 
-CurrencyConvertor = function(userId, msg){
+CurrencyConvertor = async function(userId, msg){
 
   var orgtext = msg;
 
@@ -61,47 +61,38 @@ CurrencyConvertor = function(userId, msg){
     countryobtained=false;
     currencyobtained=false;
 
-  var convertedvalue=0.0;
-    async.series([
-      function(callback){
-        switch(country){
-          case 'canada':
-            convertedvalue = dollarvalue * 1.25;
-            bot.sendTextMessage(userId,' You requested to convert to Canandian currency and the value is ' + convertedvalue);
-            break;
-          case 'india':
-              convertedvalue = dollarvalue * 64.67;
-              bot.sendTextMessage(userId,' You requested to convert to Indian currency and the value is ' + convertedvalue);
-              break;
-          case 'euro':
-                  convertedvalue = dollarvalue * 0.85;
-                  bot.sendTextMessage(userId,' You requested to convert to Euro and the value is ' + convertedvalue);
-                  break;
-        }
+    var convertedvalue=0.0;
+
+    var quickreply = [
+      {
+        "content_type" : "text",
+        "title": "👍",
+        "payload" : "thumbs_up"
       },
-      function(callback){
-        var quickreply = [
-          {
-            "content_type" : "text",
-            "title": "👍",
-            "payload" : "thumbs_up"
-          },
-          {
-            "content_type" : "text",
-            "title": "👎",
-            "payload" : "thumbs_down"
-          }
-
-        ];
-
-        bot.sendQuickReplies(userId, ' Please rate my service', quickreply);
+      {
+        "content_type" : "text",
+        "title": "👎",
+        "payload" : "thumbs_down"
       }
-    ], function () {
-      callback(null);
-  });
+    ];
     
+    switch(country){
+      case 'canada':
+        convertedvalue = dollarvalue * 1.25;
+        bot.sendTextMessage(userId,' You requested to convert to Canandian currency and the value is ' + convertedvalue);
+        break;
+      case 'india':
+          convertedvalue = dollarvalue * 64.67;
+          bot.sendTextMessage(userId,' You requested to convert to Indian currency and the value is ' + convertedvalue);
+          break;
+      case 'euro':
+              convertedvalue = dollarvalue * 0.85;
+              bot.sendTextMessage(userId,' You requested to convert to Euro and the value is ' + convertedvalue);
+              break;
 
-        
+      }
+
+      bot.sendQuickReplies(userId, ' Please rate my service', quickreply);
 
   }
 
