@@ -62,23 +62,24 @@ CurrencyConvertor = function(userId, msg){
     currencyobtained=false;
 
   var convertedvalue=0.0;
-
-    switch(country){
-      case 'canada':
-        convertedvalue = dollarvalue * 1.25;
-        bot.sendTextMessage(userId,' You requested to convert to Canandian currency and the value is ' + convertedvalue);
-        break;
-      case 'india':
-          convertedvalue = dollarvalue * 64.67;
-          bot.sendTextMessage(userId,' You requested to convert to Indian currency and the value is ' + convertedvalue);
-          break;
-      case 'euro':
-              convertedvalue = dollarvalue * 0.85;
-              bot.sendTextMessage(userId,' You requested to convert to Euro and the value is ' + convertedvalue);
+    async.series([
+      function(callback){
+        switch(country){
+          case 'canada':
+            convertedvalue = dollarvalue * 1.25;
+            bot.sendTextMessage(userId,' You requested to convert to Canandian currency and the value is ' + convertedvalue);
+            break;
+          case 'india':
+              convertedvalue = dollarvalue * 64.67;
+              bot.sendTextMessage(userId,' You requested to convert to Indian currency and the value is ' + convertedvalue);
               break;
-
+          case 'euro':
+                  convertedvalue = dollarvalue * 0.85;
+                  bot.sendTextMessage(userId,' You requested to convert to Euro and the value is ' + convertedvalue);
+                  break;
         }
-
+      },
+      function(callback){
         var quickreply = [
           {
             "content_type" : "text",
@@ -94,6 +95,13 @@ CurrencyConvertor = function(userId, msg){
         ];
 
         bot.sendQuickReplies(userId, ' Please rate my service', quickreply);
+      }
+    ], function () {
+      callback(null);
+  });
+    
+
+        
 
   }
 
